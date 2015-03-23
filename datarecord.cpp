@@ -1,38 +1,4 @@
-template <typename T>
-T StringToNumber ( const string &Text )//Text not by const reference so that the function can be used with a 
-{                               //character array as argument
-	stringstream ss(Text);
-	T result;
-	return ss >> result ? result : 0;
-}
-
-class dataRecord
-{
-public :
-	void addField(std::string value);
-	friend bool isMatch(dataRecord rec1, dataRecord rec2);
-private :
-	int numFields;
-	std::vector<std::string> fields;
-}
-
-
-class dataRecordSet
-{
-public :
-	void readFile(std::string fname);
-	void writeFile(std::string fname);
-        void addColumn(dataRecordSet recSet, int col);
-	void setSyncField(int iField);
-private :
-        char recSeparator=",";
-	int numRecords, syncFieldNum;
-	std::vector<std::string> columnLabels;
-	std::vector<dataRecord> records;
-	std::vector<int> syncFields;
-	std::string readRecord(std::stringstream input);
-}
-
+#include "datarecord.h"
 
 void dataRecord::addField(std::string value)
 {
@@ -43,36 +9,42 @@ void dataRecord::addField(std::string value)
 std::string dataRecordSet::readRecord(std::stringstream input)
 {
 	std::string rec;
-	rec.resize(input.size());
+	rec.resize(input.str.size());
 	auto c=rec.begin();
-        *c=input.getc();
-	while (*c!=recSeparator) *(c++)=input.getc();
+        *c=input.get();
+	while (*c!=recSeparator) *(c++)=input.get();
 	rec.resize(c-rec.begin());
 }
 
 void dataRecordSet::readFile(std::string fname)
 {
-	std::istream input(fname);
+	std::ifstream input(fname);
 	std::stringstream line;
+	std::string str;
 	// Read Column labels
-	line=input.getline();
+	std::getline(input,str);
+	line.str(str);
 	while (line.good())
 	{
-		columnLabels.addField(readRecord(line));
+		std::getline(line,str,',');
+		columnLabels.push_back(str);
 	}
 	// Read data
 	auto current=records.begin();
-	line=input.getline();
+	std::getline(input,str);
+	line.str(str);
 	while (input.good())
 	{
 		if (current>=records.end())
 			records.resize(records.size()+100);
 		while (line.good())
 		{
-			current->addField(readRecord(line));
+			std::getline(line,str,',');
+			current->addField(str);
 		}
 		current++;
-		line=input.getline();
+		std::getline(input,str);
+		line.str(str);
 	}
 	records.resize(current-records.begin());
 }
@@ -82,9 +54,9 @@ void dataRecordSet::setSyncField(int iField)
 	syncFieldNum=iField;
 	syncFields.resize(0);
 	syncFields.reserve(numRecords);
-	auto current=records.begin()
+	auto current=records.begin();
 	while (current < records.end())
-		syncFields.push_back(StringToNumber(current->fields.at(iField)));
+		syncFields.push_back(StringToNumber<int>(current->field(iField)));
 }
 
 void dataRecordSet::addColumn(dataRecordSet file2, int iField)

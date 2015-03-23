@@ -1,10 +1,13 @@
 
+#include "datarecord.h"
+
 void main(int argc, char* argv[])
 {
 
 	std::string inputFile1,inputFile2,outputFileName;
-        dataRecordSet file1,file2;
-	vector<int> appCols;
+	dataRecordSet file1,file2;
+	int syncField1,syncField2;
+	std::vector<int> appCols;
 	
 	// TODO: read input arguments, argv, and define
 	// input files, sync column, and columns to append
@@ -19,7 +22,7 @@ void main(int argc, char* argv[])
 
         for (int i=0; i<appCols.size(); i++)
         { 
-           file1.addColumn(file2,appCols(i));
+           file1.addColumn(file2,appCols[i]);
 	}
 	
 	file1.writeFile(outputFileName);
