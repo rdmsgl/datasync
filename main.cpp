@@ -6,6 +6,11 @@ void main(int argc, char* argv[])
         dataRecordSet file1,file2;
 	vector<int> appCols;
 	
+	// TODO: read input arguments, argv, and define
+	// input files, sync column, and columns to append
+
+	// AND/OR: use Q&A format to define these details
+
 	file1.readFile(inputFile1);
 	file2.readFile(inputFile2);
 
