@@ -31,3 +31,8 @@
 *.swp
 *.bak
 *~
+
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+obj/
