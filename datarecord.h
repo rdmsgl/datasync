@@ -19,7 +19,6 @@ public :
 	friend bool isMatch(dataRecord rec1, dataRecord rec2);
 	inline std::string field(int iField) { return fields.at(iField); };
 	inline void syncField(int val) { syncFieldVal=val; };
-	inline int syncFieldInt() { return syncFieldVal; };
 	inline std::string syncFieldStr() { return field(syncFieldIdx); };
 	inline bool operator<(const dataRecord &b) {return this->syncFieldVal<b.syncFieldVal;};
 	friend std::ostream& operator<<(std::ostream& os, dataRecord);
@@ -27,7 +26,7 @@ public :
 private :
 	char recSeparator;
 	int numFields;
-	int syncFieldVal;
+	std::string syncFieldVal;
 	int syncFieldIdx;
 	std::vector<std::string> fields;
 };
@@ -48,6 +47,5 @@ private :
 	bool isSortBool;
 	dataRecord columnLabels;
 	std::vector<dataRecord> records;
-	std::vector<int> syncFields;
 	void sort();
 };

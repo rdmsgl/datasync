@@ -17,12 +17,12 @@ void main(int argc, char* argv[])
 		inputFile1.assign(argv[1]);
 		inputFile2.assign(argv[2]);
 		outputFileName.assign(argv[3]);
-		syncField1=atoi(argv[4]);
-		syncField2=atoi(argv[5]);
+		syncField1=atoi(argv[4])-1;
+		syncField2=atoi(argv[5])-1;
 		int i=6;
 		for (std::vector<int>::iterator itr=appCols.begin();itr<appCols.end();itr++)
 		{
-			*itr=atoi(argv[i++]);
+			*itr=atoi(argv[i++])-1;
 		}
 	}
 
@@ -34,8 +34,8 @@ void main(int argc, char* argv[])
 	file1.setSyncField(syncField1);
 	file2.setSyncField(syncField2);
 
-        for (size_t i=0; i<appCols.size(); i++)
-        { 
+	for (size_t i=0; i<appCols.size(); i++)
+	{ 
            file1.addColumn(file2,appCols[i]);
 	}
 	

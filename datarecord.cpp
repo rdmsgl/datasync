@@ -38,6 +38,8 @@ void dataRecordSet::readFile(std::string fname)
 		idx++;
 		std::getline(input,str);
 		line.str(str);
+		line.clear();
+		line.seekg(0);
 	}
 	records.resize(idx);
 	numRecords=idx;
@@ -60,7 +62,6 @@ void dataRecordSet::writeFile(std::string fname)
 void dataRecordSet::setSyncField(int iField)
 {
 	syncFieldIdx=iField;
-	syncFields.resize(numRecords);
 	auto current=records.begin();
 	while (current < records.end())
 		(current++)->setSyncField(iField);
@@ -68,7 +69,7 @@ void dataRecordSet::setSyncField(int iField)
 void dataRecord::setSyncField(int iField)
 {
 	syncFieldIdx=iField;
-	syncFieldVal=StringToNumber<int>(fields.at(iField));
+	syncFieldVal=fields.at(iField);
 }
 
 void dataRecordSet::addColumn(dataRecordSet file2, int iField)
@@ -79,21 +80,22 @@ void dataRecordSet::addColumn(dataRecordSet file2, int iField)
 		file2.sort();
 	auto current1= this->records.begin();
 	auto current2= file2.records.begin();
-	while (current1 < this->records.end())
+	while (current1 != this->records.end())
 	{
-		if (current1->syncFieldInt()==current2->syncFieldInt())
+		if (current1->syncFieldStr()==current2->syncFieldStr())
 		{
-			current1->push_back(current2->syncFieldStr());
+			current1->push_back(current2->field(iField));
 			current1++;
 			current2++;
 		}
-		else if (current1->syncFieldInt()<current2->syncFieldInt())
+		else if (current1->syncFieldStr()<current2->syncFieldStr())
 		{
 			current1++;
 		}
 		else
 		{
 			current2++;
+			if (current2==file2.records.end()) break;
 		}
 	}
 }
