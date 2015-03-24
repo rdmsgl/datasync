@@ -20,7 +20,7 @@ void main(int argc, char* argv[])
 	file1.setSyncField(syncField1);
 	file2.setSyncField(syncField2);
 
-        for (int i=0; i<appCols.size(); i++)
+        for (size_t i=0; i<appCols.size(); i++)
         { 
            file1.addColumn(file2,appCols[i]);
 	}

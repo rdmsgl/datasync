@@ -1,19 +1,9 @@
 #include "datarecord.h"
 
-void dataRecord::addField(std::string value)
+void dataRecord::push_back(std::string value)
 {
 	fields.push_back(value);
         numFields=fields.size();
-}
-
-std::string dataRecordSet::readRecord(std::stringstream input)
-{
-	std::string rec;
-	rec.resize(input.str.size());
-	auto c=rec.begin();
-        *c=input.get();
-	while (*c!=recSeparator) *(c++)=input.get();
-	rec.resize(c-rec.begin());
 }
 
 void dataRecordSet::readFile(std::string fname)
@@ -40,23 +30,42 @@ void dataRecordSet::readFile(std::string fname)
 		while (line.good())
 		{
 			std::getline(line,str,',');
-			current->addField(str);
+			current->push_back(str);
 		}
 		current++;
 		std::getline(input,str);
 		line.str(str);
 	}
 	records.resize(current-records.begin());
+	input.close();
+}
+void dataRecordSet::writeFile(std::string fname)
+{
+	std::ofstream output(fname);
+	// Write Column labels
+	output << columnLabels;
+	// Read data
+	auto current=records.begin();
+	while (current<records.end())
+	{
+		output << *current;
+	}
+	output.close();
 }
 
 void dataRecordSet::setSyncField(int iField)
 {
-	syncFieldNum=iField;
+	syncFieldIdx=iField;
 	syncFields.resize(0);
 	syncFields.reserve(numRecords);
 	auto current=records.begin();
 	while (current < records.end())
-		syncFields.push_back(StringToNumber<int>(current->field(iField)));
+		current->setSyncField(iField);
+}
+void dataRecord::setSyncField(int iField)
+{
+	syncFieldIdx=iField;
+	syncFieldVal=StringToNumber<int>(fields.at(iField));
 }
 
 void dataRecordSet::addColumn(dataRecordSet file2, int iField)
@@ -69,13 +78,13 @@ void dataRecordSet::addColumn(dataRecordSet file2, int iField)
 	auto current2= file2.records.begin();
 	while (current1 < this->records.end())
 	{
-		if (current1->syncField==current2->syncField)
+		if (current1->syncFieldInt()==current2->syncFieldInt())
 		{
-			current1->addField(current2->syncField);
+			current1->push_back(current2->syncFieldStr());
 			current1++;
 			current2++;
 		}
-		else if (current->syncField<current2->syncField)
+		else if (current1->syncFieldInt()<current2->syncFieldInt())
 		{
 			current1++;
 		}
@@ -86,3 +95,17 @@ void dataRecordSet::addColumn(dataRecordSet file2, int iField)
 	}
 }
 
+void dataRecordSet::sort()
+{
+	std::sort(records.begin(),records.end());
+}
+
+std::ostream& operator<<(std::ostream& os,dataRecord record)
+{
+	auto current=record.fields.begin();
+	os<<*current++;
+	while (current<record.fields.end())
+		os<<record.recSeparator<<*current++;
+	os<<std::endl;
+	return os;
+}
