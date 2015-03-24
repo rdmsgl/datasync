@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerCommandArguments>"2014-12 Northampton Voter Data.csv" "2015 Township Phone List.csv" "test.csv" 1 15 9</LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory>D:\Work\misc\DataStructures\testcase</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+</Project>

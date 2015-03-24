@@ -3,7 +3,7 @@
 void dataRecord::push_back(std::string value)
 {
 	fields.push_back(value);
-        numFields=fields.size();
+	numFields=fields.size();
 }
 
 void dataRecordSet::readFile(std::string fname)
@@ -20,23 +20,27 @@ void dataRecordSet::readFile(std::string fname)
 		columnLabels.push_back(str);
 	}
 	// Read data
-	auto current=records.begin();
+	records.resize(30000);
+	int idx=0;
 	std::getline(input,str);
 	line.str(str);
+	line.clear();
+	line.seekg(0);
 	while (input.good())
 	{
-		if (current>=records.end())
-			records.resize(records.size()+100);
+		if (idx==records.size())
+			records.resize(records.size()*2);
 		while (line.good())
 		{
 			std::getline(line,str,',');
-			current->push_back(str);
+			records[idx].push_back(str);
 		}
-		current++;
+		idx++;
 		std::getline(input,str);
 		line.str(str);
 	}
-	records.resize(current-records.begin());
+	records.resize(idx);
+	numRecords=idx;
 	input.close();
 }
 void dataRecordSet::writeFile(std::string fname)
@@ -48,7 +52,7 @@ void dataRecordSet::writeFile(std::string fname)
 	auto current=records.begin();
 	while (current<records.end())
 	{
-		output << *current;
+		output << *current++;
 	}
 	output.close();
 }
@@ -56,11 +60,10 @@ void dataRecordSet::writeFile(std::string fname)
 void dataRecordSet::setSyncField(int iField)
 {
 	syncFieldIdx=iField;
-	syncFields.resize(0);
-	syncFields.reserve(numRecords);
+	syncFields.resize(numRecords);
 	auto current=records.begin();
 	while (current < records.end())
-		current->setSyncField(iField);
+		(current++)->setSyncField(iField);
 }
 void dataRecord::setSyncField(int iField)
 {
