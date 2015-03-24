@@ -16,3 +16,7 @@ The current version is controlled using command line arguments, and contains no 
 6: appendCol1 : column index (an integer) for data in file 2 that will be appended to data from file 1.
 
 7: ... additional column data can also be appended. this has not been tested.
+
+Example:
+
+datasync.exe "Voter Data.csv" "Phone List.csv" "test.csv" 1 15 9
